@@ -3,19 +3,32 @@ name: Build TV APK
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
+      # 添加这一行确保进入项目目录
+      - name: Navigate to project
+        run: |
+          ls -la
+          cd dart_simple_live/  # 如果项目在子目录中
+          ls -la
+          
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.5'
-      - run: flutter pub get
-      - run: flutter build apk --release --flavor tv
-      - uses: actions/upload-artifact@v4  # 更新到 v4
+          
+      - name: Get dependencies
+        run: flutter pub get
+        
+      - name: Build APK
+        run: flutter build apk --release --flavor tv
+        
+      - uses: actions/upload-artifact@v4
         with:
           name: tv-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: dart_simple_live/build/app/outputs/flutter-apk/app-release.apk  # 更新路径
