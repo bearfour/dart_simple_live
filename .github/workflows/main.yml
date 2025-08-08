@@ -11,24 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      # 添加这一行确保进入项目目录
-      - name: Navigate to project
-        run: |
-          ls -la
-          cd dart_simple_live/  # 如果项目在子目录中
-          ls -la
-          
+      # 进入 TV 版应用目录
+      - name: Navigate to TV app
+        run: cd simple_live_tv_app && ls -la
+      
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.5'
-          
+      
+      # 在 TV 应用目录下执行 Flutter 命令
       - name: Get dependencies
-        run: flutter pub get
-        
+        run: |
+          cd simple_live_tv_app
+          flutter pub get
+      
       - name: Build APK
-        run: flutter build apk --release --flavor tv
-        
+        run: |
+          cd simple_live_tv_app
+          flutter build apk --release
+      
       - uses: actions/upload-artifact@v4
         with:
           name: tv-apk
-          path: dart_simple_live/build/app/outputs/flutter-apk/app-release.apk  # 更新路径
